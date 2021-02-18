@@ -621,6 +621,13 @@ Loop:
 	for {
 		switch l.next() {
 		case '\\':
+			// if this backslash precedes a 'u', this is most likely a quoted unicode character
+			// and we can proceed to lex it as a normal string
+			next := l.peek()
+			if next == 'u' {
+				return lexString
+			}
+
 			return lexEscape
 		case utf8.RuneError:
 			l.errorf("invalid UTF-8 rune")

@@ -3275,6 +3275,16 @@ var testSeries = []struct {
 		expectedMetric: labels.FromStrings(labels.MetricName, "my_metric", "a", "b"),
 		expectedValues: newSeq(1, 2, 3),
 	}, {
+		// Handle graphical unicode characters
+		input:          `my_metric{a=""} 1 2 3    `,
+		expectedMetric: labels.FromStrings(labels.MetricName, "my_metric", "a", ``),
+		expectedValues: newSeq(1, 2, 3),
+	}, {
+		// Handle quoted unicode characters
+		input:          `my_metric{a="\uf04a"} 1 2 3    `,
+		expectedMetric: labels.FromStrings(labels.MetricName, "my_metric", "a", ``),
+		expectedValues: newSeq(1, 2, 3),
+	}, {
 		input: `my_metric{a="b"} -3-3 -3`,
 		fail:  true,
 	}, {
